@@ -1,0 +1,23 @@
+{
+  "npmScope": "test",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "generate-sources"]
+      }
+    }
+  },
+  "targetDependencies": {
+    "generate-sources": [
+      {
+        "target": "generate-sources",
+        "projects": "dependencies"
+      },
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  }
+}

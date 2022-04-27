@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "two:generate-sources",
+      "program": "${workspaceFolder}/node_modules/nx/bin/nx.js",
+      "args": ["run", "two:generate-sources"],
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "outputCapture": "std",
+      "sourceMaps": true,
+      "runtimeArgs": ["--preserve-symlinks"],
+      "preLaunchTask": "clean"
+    }
+  ]
+}
