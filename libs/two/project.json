@@ -14,23 +14,6 @@
         ],
         "parallel": false
       }
-    },
-    "generate-sources": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          { "command": "echo two:generate-sources", "forwardAllArgs": false },
-          {
-            "command": "mkdir -p ./dist",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "touch ./dist/one",
-            "forwardAllArgs": false
-          }
-        ],
-        "parallel": false
-      }
     }
   }
 }

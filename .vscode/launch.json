@@ -2,9 +2,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "two:generate-sources",
+      "name": "two:build",
       "program": "${workspaceFolder}/node_modules/nx/bin/nx.js",
-      "args": ["run", "two:generate-sources"],
+      "args": ["run", "two:build"],
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
       "type": "pwa-node",

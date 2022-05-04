@@ -3,10 +3,7 @@
   "description": "A sample repository to show that Nx is not firing dependencies",
   "version": "1.0.0",
   "devDependencies": {
-    "@nrwl/cli": "14.0.3",
-    "@nrwl/nx-cloud": "^13.3.1",
-    "@nrwl/workspace": "14.0.3",
-    "prettier": "^2.5.0",
-    "typescript": "~4.1.5"
+    "@nrwl/cli": "14.0.5",
+    "@nrwl/workspace": "14.0.5"
   }
 }

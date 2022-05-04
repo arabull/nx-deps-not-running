@@ -11,19 +11,19 @@ There are two projects:
 
 Via an implicit dependency, project "two" depends on project "one".
 
-Project "one" has a `generate-sources` target. Via `nx.json`, a project's `generate-sources` target depends on its dependencies' `generate-sources` _and_ `build` targets. (The fact that it depends on both is critical to this issue.)
+Project "one" has a `build` target. Via `nx.json`, a project's `build` target depends on its dependencies' `generate-sources` _and_ `build` targets. (The fact that it depends on both is critical to this issue.) The project's `build` target produces output that project "two" requires.
 
-Project "two" has a single `build` target but does _not_ have a `generate-sources` target (this is also critical). It produces output that project "one" requires when running `generate-sources`.
+Project "two" has a single `build` target but does _not_ have a `generate-sources` target (this is also critical). It looks for the output from the `build` target run by project "one".
 
 ## instructions
 
 1. `npm i`
 1. `rm -rf ./dist`
-1. `nx run two:generate-sources`
+1. `nx run two:build`
 
 ## expected
 
-Before the the `generate-sources` target for project "two" runs, the `build` target for project "one" should run.
+Before the the `build` target for project "two" runs, the `build` target for project "one" should run.
 
 ## actual
 
@@ -33,11 +33,11 @@ The `build` target for project "one" never runs.
 
 This used to work and regressed in version 13.10.
 
-As far as I can tell, there are two things working together to cause the problem. First, `nx.json` has _two_ target dependencies for `generate-sources`:
+As far as I can tell, there are two things working together to cause the problem. First, `nx.json` has _two_ target dependencies for `build`:
 
 ```json
   "targetDependencies": {
-    "generate-sources": [
+    "build": [
       {
         "target": "generate-sources",
         "projects": "dependencies"
@@ -50,14 +50,6 @@ As far as I can tell, there are two things working together to cause the problem
   }
 ```
 
-That, coupled with [these lines](https://github.com/nrwl/nx/blob/b6617105f32ba61e1e40f6ff9f96fc0ba333c7fb/packages/nx/src/tasks-runner/run-command.ts#L398-L400) of code causes the process to short-circuit before the dependent targets are run.
+The name of the first target is irrelevant to the issue at hand, but the fact that there _is_ a first target is critical.
 
-This is what happens:
-
-1. Nx looks for targets that should run before `two:generate-sources`.
-1. It finds project "one" and checks if it has a `generate-sources` target. It does not, _but Nx flags the whole project as "seen"_.
-1. It finds project "one" and checks if it has a `build` target. It does, but before `addTasksForProjectDependencyConfig()` is called, it checks if the project has already been seen. It has, so it short-circuits. Therefore, `one:build` never runs.
-
-This happens because there are two blocks within `targetDependencies`. Once that first block executes, dependent projects are marked as "seen", and the second block never fires. Also, adding `generate-sources` to project "one" doesn't solve the problem. That target fires, but the project is still marked as "seen", which means that `build` target never fires.
-
-The "seen" logic was introduced with the circular dependency check, which makes sense, but this is not a circular dependency. Commenting out out [the short-circuit](https://github.com/nrwl/nx/blob/b6617105f32ba61e1e40f6ff9f96fc0ba333c7fb/packages/nx/src/tasks-runner/run-command.ts#L399) fixes the problem, but it almost certainly breaks the circular dependency checking, so I'm not sure what the correct fix is.
+A partial fix went in with https://github.com/nrwl/nx/pull/9942. That took care of the situation where a dependent project had two targets but only the first ran. That's not the case here. In this case, the dependent project _only has the second target_. If I add a `generate-sources` target to project "one", the problem goes away (thanks to the https://github.com/nrwl/nx/pull/9942 fix). But adding that target shouldn't be a requirement to run subsequent targets.
