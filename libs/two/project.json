@@ -10,14 +10,7 @@
             "command": "echo two:build",
             "forwardAllArgs": false
           },
-          {
-            "command": "mkdir -p ./dist",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "touch ./dist/two",
-            "forwardAllArgs": false
-          }
+          { "command": "test -e ./dist/one", "forwardAllArgs": false }
         ],
         "parallel": false
       }
@@ -27,7 +20,14 @@
       "options": {
         "commands": [
           { "command": "echo two:generate-sources", "forwardAllArgs": false },
-          { "command": "test -e ./dist/one", "forwardAllArgs": false }
+          {
+            "command": "mkdir -p ./dist",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "touch ./dist/one",
+            "forwardAllArgs": false
+          }
         ],
         "parallel": false
       }
