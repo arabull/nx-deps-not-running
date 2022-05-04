@@ -2,10 +2,7 @@
   "npmScope": "test",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "generate-sources"]
-      }
+      "runner": "@nrwl/workspace/tasks-runners/default"
     }
   },
   "targetDependencies": {
